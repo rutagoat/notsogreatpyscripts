@@ -2,8 +2,9 @@ from selenium import webdriver
 import requests, csv
 from bs4 import BeautifulSoup
 
+#uses selenium because of cloudflare ddos protection on website when trying to visit for first time
 
-browser = webdriver.Chrome(executable_path=r'C:\Users\Administrator\Desktop\chromedriver\chromedriver.exe')
+browser = webdriver.Chrome(executable_path=r'chromedriver.exe') 
 
 url = 'https://1337x.to/user/bookrar/'
 url = url.replace('user/'+url.split('/')[4], url.split('/')[4]+'-torrents/1')
@@ -20,7 +21,7 @@ def source(text):
     return rowsData, rowsLen
 
 
-scrapedate = []
+scrapedata = []
 
 for pageno in range(2,lastPage+1):
     
@@ -39,7 +40,7 @@ for pageno in range(2,lastPage+1):
         soup = BeautifulSoup(getPage.content,'html.parser')
         magnetlink = soup.select('a[href^="magnet"]')[0]['href']
         
-        scrapedate.append({'Torrentid' : torrentid, 'Name': filename, 'Seeders': seeders, 'Leechers': leechers, 'Size': size, 'Time': uploadTime, 'Link': filelink, 'MagnetLink': magnetlink})
+        scrapedata.append({'Torrentid' : torrentid, 'Name': filename, 'Seeders': seeders, 'Leechers': leechers, 'Size': size, 'Time': uploadTime, 'Link': filelink, 'MagnetLink': magnetlink})
 
         #print(filename + ' - ' + seeders + ' - ' + leechers + ' - ' + size + ' - ' + uploadTime + ' - ' + filelink + ' - ' + magnetlink)
         
@@ -51,7 +52,7 @@ with open(url.split('/')[3]+'.csv', mode='w') as csv_file:
     writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
     writer.writeheader()
-    for onekey in range(len(scrapedate)):
-        writer.writerow(scrapedate[onekey])
+    for onekey in range(len(scrapedata)):
+        writer.writerow(scrapedata[onekey])
 
         
